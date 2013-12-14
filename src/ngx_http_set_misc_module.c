@@ -156,6 +156,20 @@ static ndk_set_var_t ngx_http_set_misc_local_today_filter = {
     NULL
 };
 
+static ndk_set_var_t ngx_http_set_misc_formatted_gmt_time_filter = {
+    NDK_SET_VAR_VALUE,
+    ngx_http_set_formatted_gmt_time,
+    2,
+    NULL
+};
+
+static ndk_set_var_t ngx_http_set_misc_formatted_local_time_filter = {
+    NDK_SET_VAR_VALUE,
+    ngx_http_set_formatted_local_time,
+    2,
+    NULL
+};
+
 
 static ndk_set_var_t ngx_http_set_misc_formatted_gmt_time_filter = {
     NDK_SET_VAR_VALUE,
