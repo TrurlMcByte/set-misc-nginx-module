@@ -108,3 +108,35 @@ ngx_http_set_formatted_local_time(ngx_http_request_t *r, ngx_str_t *res,
 
     return NGX_OK;
 }
+
+ngx_int_t
+ngx_http_set_hires_time(ngx_http_request_t *r, ngx_str_t *res,
+    ngx_http_variable_value_t *v)
+{
+    u_char          *p;
+    uint32_t lo, hi;
+    unsigned long long t;
+
+    p = ngx_palloc(r->pool, NGX_HTTP_SET_MISC_FMT_DATE_LEN);
+    if (p == NULL) {
+        return NGX_ERROR;
+    }
+    __asm__ __volatile__ (
+      "xorl %%eax, %%eax\n"
+      "cpuid\n"
+      "rdtsc\n"
+      : "=a" (lo), "=d" (hi)
+      :
+      : "%ebx", "%ecx");
+    t = (uint64_t)hi << 32 | lo;
+
+    res->len = snprintf((char *) p, NGX_HTTP_SET_MISC_FMT_DATE_LEN, "%lld", t);
+    if (res->len == 0) {
+        return NGX_ERROR;
+    }
+
+    res->data = p;
+
+    return NGX_OK;
+}
+
